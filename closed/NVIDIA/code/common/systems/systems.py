@@ -191,7 +191,9 @@ def get_numa_info():
 
         toks = line.split()
         if not toks[0].startswith("GPU"):
-            if toks[0].startswith("mlx"):
+            # On our systems, IB and BF cards are shown in nvidia-smi topo -m
+            # output as NIC<x> and not as mlx_<x>
+            if toks[0].startswith("NIC") or toks[0].startswith("mlx"):
                 logging.warning(f"Found Mellanox core {toks[0]}. Skipping.")
                 found_mellanox_nic = True
             else:
