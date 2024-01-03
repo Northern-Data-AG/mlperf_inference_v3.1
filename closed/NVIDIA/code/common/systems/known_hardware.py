@@ -257,7 +257,10 @@ class KnownMIG(MatchableEnum):
 class KnownCPU(MatchableEnum):
     GraceHopper_ARM = CPU(AliasedName("aarch64_0", ("NVIDIA Grace CPU"),),
                           CPUArchitecture.aarch64, 72, 1)
-    Intel_Xeon_Platinum_8480C = CPU(AliasedName('Intel(R) Xeon(R) Platinum 8480C', ("Intel(R) Xeon(R) Platinum 8480CL",)),
+    # We trick the CPU detection slightly by presenting our Xeon Platinum 8480+ as Xeon Platinum 8480C.
+    # This is so that the detection script recognizes our H100 servers as DGX H100.
+    # We want this effect to automatically get the benchmark parameters as for DGX H100.
+    Intel_Xeon_Platinum_8480C = CPU(AliasedName('Intel(R) Xeon(R) Platinum 8480+', ("Intel(R) Xeon(R) Platinum 8480+",)),
                                     architecture=CPUArchitecture.x86_64, core_count=56, threads_per_core=MatchAllowList([1, 2]))
     AMD_EPYC_7742 = CPU(AliasedName("AMD EPYC 7742 64-Core Processor", ("AMD EPYC 7742",)),
                         CPUArchitecture.x86_64, MatchAllowList([64, 32]), MatchAllowList([1, 2]))
