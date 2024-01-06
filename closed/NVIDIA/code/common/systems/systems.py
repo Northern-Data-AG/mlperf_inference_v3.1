@@ -195,7 +195,12 @@ def get_numa_info():
             # output as NIC<x> and not as mlx_<x>
             if toks[0].startswith("NIC") or toks[0].startswith("mlx"):
                 logging.warning(f"Found Mellanox core {toks[0]}. Skipping.")
-                found_mellanox_nic = True
+                # In a convoluted fashion, there is a dependency between IB being present and NUMA config.
+                # Original NVIDIA's behavior was IB present -> DGX system -> force single NUMA domain.
+                # We want our servers to look like DGX but still use standard NUMA config taken from system.
+                # Easiest way to achieve it is to manipulate this flag
+                if toks[0].startswith("mlx"):
+                    found_mellanox_nic = True
             else:
                 logging.info(f"Found unknown device in GPU connection topology: {toks[0]}. Skipping.")
             continue
