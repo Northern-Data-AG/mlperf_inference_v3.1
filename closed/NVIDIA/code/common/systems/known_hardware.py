@@ -95,11 +95,14 @@ class KnownGPU(MatchableEnum):
               max_power_limit=300.0,
               pci_id=pci_id_match_list(("26B5",)),
               compute_sm=89)
+    # For easiest support for H800s make this detection treat them as H100s.
+    # Then our 8x H800 systems will be recognized as DGX H100 and same settings will get auto-applied.
+    # PCI id for a GPU can be determined e.g. by output of lspci | grep NVIDIA
     H100_SXM_80GB = GPU(name="NVIDIA Graphics Device",
                         accelerator_type=AcceleratorType.Discrete,
                         vram=match_float_approximate(Memory(80, ByteSuffix.GiB)),
                         max_power_limit=700.0,
-                        pci_id=pci_id_match_list(("2330", "233F")),
+                        pci_id=pci_id_match_list(("2330", "233F", "2324")),
                         compute_sm=90)
     H100_PCIe_80GB = GPU(name="NVIDIA Graphics Device",
                          accelerator_type=AcceleratorType.Discrete,
